@@ -26,10 +26,10 @@ class TimesheetReader:
         """
         Write all `data` rows to CSV file, along with `header`.
         """
-        with open(self.path, "w", newline="") as file:
-            writer = csv.writer(file, delimiter=";")
+        with open(self.path, "w", newline="", encoding="utf-8") as file:
+            writer = csv.writer(file, delimiter=";", lineterminator="\n")
             writer.writerows([self.header])
-            writer.writerows(self._data)
+            writer.writerows(self.rows)
 
     def append_row(self, row: list[str]):
         """
