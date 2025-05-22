@@ -1,3 +1,4 @@
+import argparse
 import time
 from datetime import datetime
 from typing import Optional
@@ -38,12 +39,26 @@ def end_task():
 
 
 def main():
-    timesheet_path = get_current_timesheet_path()
-    print(f"Current timesheet path: {timesheet_path}")
+    parser = argparse.ArgumentParser(description="Time tracking tool")
+    subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
-    reader = TimesheetReader(timesheet_path)
-    data = reader.get_last_row()
-    print(data)
+    # Create parser for "start" command
+    start_parser = subparsers.add_parser("start", help="Start a new task")
+    start_parser.add_argument("project", help="Project name")
+    start_parser.add_argument("description", help="Task description")
+    start_parser.add_argument("tags", nargs="*", help="Optional tags for the task")
+
+    # Create parser for "stop" command
+    subparsers.add_parser("stop", help="Stop the currently running task")
+
+    args = parser.parse_args()
+
+    if args.command == "start":
+        start_task(args.project, args.description, args.tags)
+    elif args.command == "stop":
+        end_task()
+    else:
+        parser.print_help()
 
 
 if __name__ == "__main__":
