@@ -1,7 +1,7 @@
 import csv
 from typing import List
 
-ROWS = ["Project", "Description", "Tags", "Start DateTime", "End DateTime", "Duration"]
+ROWS = ["Project", "Description", "Tags", "Date", "StartTime", "EndTime", "Duration"]
 
 
 class TimesheetReader:
@@ -10,9 +10,8 @@ class TimesheetReader:
         Initialize CSV timesheet reader with file path.
         """
         self.path = path
+        # Don't create unnecessary state which is bound to go out of sync
         self._data = self._read()
-        self.header = self._data[0]
-        self.rows = self._data[1:]
 
     def _read(self) -> List[list[str]]:
         """
@@ -29,7 +28,7 @@ class TimesheetReader:
         with open(self.path, "w", newline="", encoding="utf-8") as file:
             writer = csv.writer(file, delimiter=";", lineterminator="\n")
             writer.writerows(self._data)
-        print(f"Written {len(self.rows)} rows to {self.path}")
+        print(f"Written {len(self._data)} rows to {self.path}")
 
     def append_row(self, row: list[str]):
         """
@@ -52,6 +51,6 @@ class TimesheetReader:
         """
         Get the last row of the CSV file.
         """
-        if not self.rows:
+        if not self._data:
             raise ValueError("No rows found in the CSV file.")
-        return self.rows[-1]
+        return self._data[-1]
