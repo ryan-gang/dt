@@ -28,14 +28,16 @@ class TimesheetReader:
         """
         with open(self.path, "w", newline="", encoding="utf-8") as file:
             writer = csv.writer(file, delimiter=";", lineterminator="\n")
-            writer.writerows([self.header])
-            writer.writerows(self.rows)
+            writer.writerows(self._data)
+        print(f"Written {len(self.rows)} rows to {self.path}")
 
     def append_row(self, row: list[str]):
         """
         Append a row to the CSV file.
         """
+        print(f"Appending row: {row}")
         self._data.append(row)
+        print(f"Data: {self._data}")
         self._write()
 
     def edit_last_row(self, row: list[str]):

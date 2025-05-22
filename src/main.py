@@ -13,13 +13,14 @@ def start_task(project: str, description: str, tags: Optional[list[str]] = None)
     """
     if tags is None:
         tags = []
-    print(f"Starting task: {project}, {description}, {tags}")
     # ROWS = ["Project", "Description", "Tags", "Start DateTime", "End DateTime", "Duration"]
     timestamp = datetime.fromtimestamp(time.time()).strftime("%Y-%m-%dT%H:%M:%S")
-    rows = [project, description, ", ".join(tags), timestamp, "", ""]
+    print(f"Starting task: {project}, {description}, {tags} @ {timestamp}")
+    new_task = [project, description, ", ".join(tags), timestamp, "", ""]
     timesheet_path = get_current_timesheet_path()
+    print(f"Timesheet path: {timesheet_path}")
     reader = TimesheetReader(timesheet_path)
-    reader.append_row(rows)
+    reader.append_row(new_task)
 
 
 def end_task():
