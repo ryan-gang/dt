@@ -13,10 +13,11 @@ def start_task(project: str, description: str, tags: Optional[list[str]] = None)
     """
     if tags is None:
         tags = []
-    # ROWS = ["Project", "Description", "Tags", "Start DateTime", "End DateTime", "Duration"]
-    timestamp = datetime.fromtimestamp(time.time()).strftime("%Y-%m-%dT%H:%M:%S")
-    print(f"Starting task: {project}, {description}, {tags} @ {timestamp}")
-    new_task = [project, description, ", ".join(tags), timestamp, "", ""]
+    date = datetime.fromtimestamp(time.time()).strftime("%Y-%m-%d")
+    start_time = datetime.fromtimestamp(time.time()).strftime("%H:%M")
+    print(f"Starting task: {project}, {description}, {tags} @ {date}:{start_time}")
+    new_task = [project, description, ", ".join(tags), date, start_time, "", ""]
+
     timesheet_path = get_current_timesheet_path()
     print(f"Timesheet path: {timesheet_path}")
     reader = TimesheetReader(timesheet_path)
@@ -30,12 +31,12 @@ def end_task():
     timesheet_path = get_current_timesheet_path()
     reader = TimesheetReader(timesheet_path)
     row = reader.get_last_row()
-    timestamp = datetime.fromtimestamp(time.time()).strftime("%Y-%m-%dT%H:%M:%S")
-    row[-2] = timestamp
-    row[-1] = str(
-        datetime.strptime(row[-2], "%Y-%m-%dT%H:%M:%S")
-        - datetime.strptime(row[-3], "%Y-%m-%dT%H:%M:%S")
-    )
+    end_time = datetime.fromtimestamp(time.time()).strftime("%H:%M")
+    row[-2] = end_time
+    delta = datetime.strptime(row[-2], "%H:%M") - datetime.strptime(row[-3], "%H:%M")
+    hours = delta.seconds // 3600
+    minutes = (delta.seconds % 3600) // 60
+    row[-1] = f"{hours}:{minutes:02d}"
     reader.edit_last_row(row)
 
 
